@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>중2 과학 호흡계 마스터 앱</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            touch-action: manipulation;
+        }
+        .title-font {
+            font-family: 'Jua', sans-serif;
+        }
+        .tablet-container {
+            max-width: 800px;
+            margin: 0 auto;
+            min-height: 100vh;
+        }
+        @media (min-width: 768px) {
+            .tablet-container {
+                border-left: 1px solid #e2e8f0;
+                border-right: 1px solid #e2e8f0;
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-850">
+
+    <div class="tablet-container flex flex-col bg-white min-h-screen">
+        
+        <!-- 상단 헤더 -->
+        <header class="bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-5 shadow-md flex justify-between items-center">
+            <div>
+                <h1 class="title-font text-2xl md:text-3xl tracking-wide flex items-center gap-2">
+                    🫁 호흡계 탐험대
+                </h1>
+                <p id="student-info-display" class="text-xs md:text-sm text-emerald-100 mt-1">중학교 2학년 과학 복습 학습 앱</p>
+            </div>
+            <div id="score-badge" class="bg-white/25 px-4 py-2 rounded-full text-sm font-bold backdrop-blur-sm">
+                ⭐ 총점: <span id="total-score">0</span>점
+            </div>
+        </header>
+
+        <!-- 탭 네비게이션 -->
+        <nav id="main-nav" class="bg-emerald-50 border-b border-emerald-100 p-2 flex justify-around sticky top-0 z-10 hidden">
+            <button onclick="switchTab('tab1')" id="btn-tab1" class="tab-btn flex-1 py-3 px-2 text-center font-bold text-emerald-700 bg-white rounded-xl shadow-sm transition-all duration-200 mx-1 flex items-center justify-center gap-1 text-xs md:text-sm border border-emerald-200">
+                🧬 1. 호흡 기관
+            </button>
+            <button onclick="switchTab('tab2')" id="btn-tab2" class="tab-btn flex-1 py-3 px-2 text-center font-medium text-slate-600 hover:text-emerald-700 rounded-xl transition-all duration-200 mx-1 flex items-center justify-center gap-1 text-xs md:text-sm">
+                💨 2. 호흡 운동
+            </button>
+            <button onclick="switchTab('tab3')" id="btn-tab3" class="tab-btn flex-1 py-3 px-2 text-center font-medium text-slate-600 hover:text-emerald-700 rounded-xl transition-all duration-200 mx-1 flex items-center justify-center gap-1 text-xs md:text-sm">
+                📝 3. 실력 문제
+            </button>
+            <button onclick="switchTab('tab4')" id="btn-tab4" class="tab-btn flex-1 py-3 px-2 text-center font-medium text-slate-600 hover:text-emerald-700 rounded-xl transition-all duration-200 mx-1 flex items-center justify-center gap-1 text-xs md:text-sm">
+                🏆 4. 결과 저장
+            </button>
+        </nav>
+
+        <!-- 메인 콘텐츠 영역 -->
+        <main class="flex-1 p-4 md:p-6 pb-20 overflow-y-auto">
+            
+            <!-- 탭 0: 입장 (학번 및 이름 입력) -->
+            <section id="content-tab0" class="space-y-6 flex flex-col items-center justify-center min-h-[60vh]">
+                <div class="w-full max-w-md bg-white border border-slate-200 shadow-xl rounded-3xl p-8 space-y-6 text-center">
+                    <div class="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto text-4xl shadow-inner">
+                        🎒
+                    </div>
+                    <div>
+                        <h2 class="title-font text-2xl text-emerald-800">환영합니다!</h2>
+                        <p class="text-sm text-slate-500 mt-1">학습을 시작하기 위해 학번과 이름을 입력해주세요.</p>
+                    </div>
+
+                    <div class="space-y-4 text-left">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">학번 (예: 20315)</label>
+                            <input type="text" id="input-student-id" placeholder="학번 5자리 입력" class="w-full px-4 py-3 border rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none bg-slate-50">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">이름</label>
+                            <input type="text" id="input-student-name" placeholder="이름 입력" class="w-full px-4 py-3 border rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none bg-slate-50">
+                        </div>
+                    </div>
+
+                    <button onclick="startApp()" class="w-full py-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl font-bold shadow-lg hover:from-emerald-600 hover:to-teal-700 transition text-base title-font tracking-wider">
+                        🚀 호흡계 탐험 시작하기
+                    </button>
+                </div>
+            </section>
+
+            <!-- 탭 1: 호흡 기관 빈칸 넣기 (제시어 없음, 순수 모식도) -->
+            <section id="content-tab1" class="space-y-6 hidden">
+                <div class="bg-emerald-50 border-l-4 border-emerald-500 p-4 rounded-r-xl">
+                    <h2 class="title-font text-lg text-emerald-800">코너 1: 호흡계 구조 빈칸 채우기</h2>
+                    <p class="text-sm text-slate-600 mt-1">아래의 호흡계 모식도를 보고, 번호 ①~⑤에 해당하는 기관의 이름을 직접 생각해 빈칸에 입력해 보세요!</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                    <!-- 모식도 SVG -->
+                    <div class="bg-white rounded-2xl p-5 flex flex-col items-center justify-center border border-slate-200 shadow-sm relative">
+                        <div class="w-full relative overflow-hidden rounded-xl border border-slate-100 bg-slate-50 flex flex-col items-center p-4">
+                            <svg viewBox="0 0 300 320" class="w-64 h-auto drop-shadow-sm">
+                                <!-- 머리/목 윤곽 -->
+                                <path d="M120,20 C120,10 180,10 180,20 C190,40 180,60 170,70 L130,70 C120,60 110,40 120,20 Z" fill="#e2e8f0" stroke="#cbd5e1" stroke-width="2"/>
+                                <!-- 코 (①) -->
+                                <circle cx="170" cy="45" r="12" fill="#10b981" fill-opacity="0.2" stroke="#10b981" stroke-width="2"/>
+                                <text x="170" y="49" font-size="12" font-weight="bold" fill="#047857" text-anchor="middle">①</text>
+                                
+                                <!-- 숨관 (②) -->
+                                <rect x="135" y="70" width="30" height="70" rx="4" fill="#f1f5f9" stroke="#64748b" stroke-width="2"/>
+                                <circle cx="150" cy="105" r="12" fill="#10b981" fill-opacity="0.2" stroke="#10b981" stroke-width="2"/>
+                                <text x="150" y="109" font-size="12" font-weight="bold" fill="#047857" text-anchor="middle">②</text>
+
+                                <!-- 숨관가지 (③) -->
+                                <path d="M150,140 L120,170 M150,140 L180,170" fill="none" stroke="#64748b" stroke-width="6" stroke-linecap="round"/>
+                                <circle cx="130" cy="160" r="12" fill="#10b981" fill-opacity="0.2" stroke="#10b981" stroke-width="2"/>
+                                <text x="130" y="164" font-size="12" font-weight="bold" fill="#047857" text-anchor="middle">③</text>
+
+                                <!-- 허파 / 허파꽈리 (④) -->
+                                <path d="M145,160 C90,160 70,220 90,260 C105,280 135,270 145,240 Z" fill="#fda4af" stroke="#f43f5e" stroke-width="2" opacity="0.8"/>
+                                <path d="M155,160 C210,160 230,220 210,260 C195,280 165,270 155,240 Z" fill="#fda4af" stroke="#f43f5e" stroke-width="2" opacity="0.8"/>
+                                <circle cx="110" cy="220" r="12" fill="#10b981" fill-opacity="0.2" stroke="#10b981" stroke-width="2"/>
+                                <text x="110" y="224" font-size="12" font-weight="bold" fill="#047857" text-anchor="middle">④</text>
+
+                                <!-- 가로막 (⑤) -->
+                                <path d="M60,280 Q150,250 240,280" fill="none" stroke="#2563eb" stroke-width="6" stroke-linecap="round"/>
+                                <circle cx="150" cy="265" r="12" fill="#10b981" fill-opacity="0.2" stroke="#10b981" stroke-width="2"/>
+                                <text x="150" y="269" font-size="12" font-weight="bold" fill="#047857" text-anchor="middle">⑤</text>
+                            </svg>
+                            <div class="absolute top-3 left-3 bg-slate-900/75 text-white text-xs px-2.5 py-1 rounded-md backdrop-blur-sm font-semibold">
+                                🎨 호흡계 구조 모식도
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 빈칸 입력 폼 -->
+                    <div class="space-y-4">
+                        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                            <div>
+                                <span class="text-sm font-semibold text-slate-700">① 공기가 드나드는 첫 번째 통로:</span>
+                                <div class="flex gap-2 mt-1">
+                                    <input type="text" id="blank-1" placeholder="정답 직접 입력" class="flex-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                                    <button onclick="checkBlank(1, '코')" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-emerald-700">확인</button>
+                                </div>
+                                <p id="feedback-1" class="text-xs mt-1 font-medium"></p>
+                            </div>
+
+                            <div>
+                                <span class="text-sm font-semibold text-slate-700">② 공기가 이동하는 관 모양의 통로:</span>
+                                <div class="flex gap-2 mt-1">
+                                    <input type="text" id="blank-2" placeholder="정답 직접 입력" class="flex-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                                    <button onclick="checkBlank(2, '숨관')" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-emerald-700">확인</button>
+                                </div>
+                                <p id="feedback-2" class="text-xs mt-1 font-medium"></p>
+                            </div>
+
+                            <div>
+                                <span class="text-sm font-semibold text-slate-700">③ 숨관이 갈라져 허파로 연결되는 가느다란 관:</span>
+                                <div class="flex gap-2 mt-1">
+                                    <input type="text" id="blank-3" placeholder="정답 직접 입력" class="flex-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                                    <button onclick="checkBlank(3, '숨관가지')" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-emerald-700">확인</button>
+                                </div>
+                                <p id="feedback-3" class="text-xs mt-1 font-medium"></p>
+                            </div>
+
+                            <div>
+                                <span class="text-sm font-semibold text-slate-700">④ 포도송이처럼 생겨 기체 교환이 일어나는 작은 주머니:</span>
+                                <div class="flex gap-2 mt-1">
+                                    <input type="text" id="blank-4" placeholder="정답 직접 입력" class="flex-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                                    <button onclick="checkBlank(4, '허파꽈리')" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-emerald-700">확인</button>
+                                </div>
+                                <p id="feedback-4" class="text-xs mt-1 font-medium"></p>
+                            </div>
+
+                            <div>
+                                <span class="text-sm font-semibold text-slate-700">⑤ 흉강 아래쪽에 위치하며 호흡 운동을 돕는 근육 막:</span>
+                                <div class="flex gap-2 mt-1">
+                                    <input type="text" id="blank-5" placeholder="정답 직접 입력" class="flex-1 px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none">
+                                    <button onclick="checkBlank(5, '가로막')" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-emerald-700">확인</button>
+                                </div>
+                                <p id="feedback-5" class="text-xs mt-1 font-medium"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 탭 2: 호흡 운동 원리 애니메이션 및 정확한 빈칸 채우기 -->
+            <section id="content-tab2" class="space-y-6 hidden">
+                <div class="bg-sky-50 border-l-4 border-sky-500 p-4 rounded-r-xl">
+                    <h2 class="title-font text-lg text-sky-800">코너 2: 호흡 운동의 원리 시뮬레이션</h2>
+                    <p class="text-sm text-slate-600 mt-1">들숨과 날숨 버튼을 눌러 갈비뼈의 오르내림, 가로막의 위아래 운동에 따른 폐와 흉강의 부피 변화, 공기의 정확한 이동을 관찰해보세요!</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center bg-slate-50 p-5 rounded-2xl border border-slate-200">
+                    <!-- 시각적 애니메이션 SVG 모형 -->
+                    <div class="flex flex-col items-center justify-center bg-white p-6 rounded-xl border border-slate-200 shadow-inner">
+                        <div id="breath-mode-title" class="title-font text-xl text-emerald-600 mb-2">🌿 들숨 상태 (숨 들이쉬기)</div>
+                        
+                        <div class="relative w-60 h-72 flex items-center justify-center bg-slate-50/50 rounded-xl border border-slate-100 p-2">
+                            <svg viewBox="0 0 260 300" class="w-full h-full" id="lung-svg">
+                                <!-- 공기 이동 화살표 그룹 (들숨: 위에서 아래로 몸 안으로) -->
+                                <g id="arrow-group" class="transition-all duration-500">
+                                    <path d="M130,5 L130,40" stroke="#10b981" stroke-width="4" stroke-linecap="round"/>
+                                    <polygon points="122,32 130,45 138,32" fill="#10b981"/>
+                                    <path d="M130,15 L130,30" stroke="#34d399" stroke-width="2" stroke-dasharray="3 3"/>
+                                </g>
+
+                                <!-- 숨관 -->
+                                <rect x="122" y="45" width="16" height="50" rx="3" fill="#cbd5e1" stroke="#475569" stroke-width="2"/>
+                                
+                                <!-- 갈비뼈 / 흉강 테두리 -->
+                                <path id="rib-left" d="M120,45 Q20,70 15,180" fill="none" stroke="#f59e0b" stroke-width="6" stroke-linecap="round" class="transition-all duration-500"/>
+                                <path id="rib-right" d="M140,45 Q240,70 245,180" fill="none" stroke="#f59e0b" stroke-width="6" stroke-linecap="round" class="transition-all duration-500"/>
+                                <text id="rib-label" x="130" y="70" font-size="11" font-weight="bold" fill="#d97706" text-anchor="middle" class="transition-all duration-500">갈비뼈 위·밖으로 올라감 ⬆️</text>
+
+                                <!-- 폐 -->
+                                <path id="lung-left" d="M120,95 C30,95 15,145 35,215 C45,240 95,245 120,215 Z" fill="#fda4af" stroke="#f43f5e" stroke-width="2" class="transition-all duration-500"/>
+                                <path id="lung-right" d="M140,95 C230,95 245,145 225,215 C215,240 165,245 140,215 Z" fill="#fda4af" stroke="#f43f5e" stroke-width="2" class="transition-all duration-500"/>
+
+                                <!-- 가로막 -->
+                                <path id="diaphragm-path" d="M15,275 Q130,265 245,275" fill="none" stroke="#2563eb" stroke-width="8" stroke-linecap="round" class="transition-all duration-500"/>
+                                <text id="diaphragm-label" x="130" y="292" font-size="11" font-weight="bold" fill="#1d4ed8" text-anchor="middle" class="transition-all duration-500">가로막 아래로 평평하게 내려감 ⬇️</text>
+                            </svg>
+                        </div>
+
+                        <!-- 제어 버튼 -->
+                        <div class="flex gap-4 mt-4 w-full">
+                            <button onclick="setBreathState('inhale')" id="btn-inhale" class="flex-1 py-2.5 bg-emerald-600 text-white rounded-xl font-bold shadow hover:bg-emerald-700 transition">들숨 (숨 들이쉬기)</button>
+                            <button onclick="setBreathState('exhale')" id="btn-exhale" class="flex-1 py-2.5 bg-slate-200 text-slate-700 rounded-xl font-bold shadow hover:bg-slate-300 transition">날숨 (숨 내쉬기)</button>
+                        </div>
+                    </div>
+
+                    <!-- 호흡 운동 원리 빈칸 채우기 (수축/이완 용어 배제, 직관적 현상 선택) -->
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                        <h3 class="font-bold text-slate-800 border-b pb-2">📋 호흡 운동 원리 확인하기</h3>
+                        
+                        <div class="space-y-4 text-sm">
+                            <div>
+                                <p class="font-semibold text-slate-700">1. [들숨] 갈비뼈가 올라가고, 가로막이 아래로 ( <span id="ans-1-res" class="text-emerald-600 font-bold">___</span> )한다.</p>
+                                <div class="flex gap-2 mt-1.5">
+                                    <select id="select-d1" class="flex-1 p-2 border rounded-lg text-xs bg-slate-50 outline-none focus:ring-2 focus:ring-sky-500">
+                                        <option value="">-- 선택하세요 --</option>
+                                        <option value="내려감">내려감</option>
+                                        <option value="올라감">올라감</option>
+                                    </select>
+                                    <button onclick="checkBreathQuiz(1, '내려감')" class="bg-sky-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-sky-700">확인</button>
+                                </div>
+                            </div>
+
+                            <div>
+                                <p class="font-semibold text-slate-700">2. [들숨] 흉강의 부피가 ( <span id="ans-2-res" class="text-emerald-600 font-bold">___</span> )하여 압력이 낮아지므로, 공기가 몸 안으로 들어온다.</p>
+                                <div class="flex gap-2 mt-1.5">
+                                    <select id="select-d2" class="flex-1 p-2 border rounded-lg text-xs bg-slate-50 outline-none focus:ring-2 focus:ring-sky-500">
+                                        <option value="">-- 선택하세요 --</option>
+                                        <option value="넓어져">넓어져</option>
+                                        <option value="좁아져">좁아져</option>
+                                    </select>
+                                    <button onclick="checkBreathQuiz(2, '넓어져')" class="bg-sky-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-sky-700">확인</button>
+                                </div>
+                            </div>
+
+                            <div>
+                                <p class="font-semibold text-slate-700">3. [날숨] 가로막이 올라가고 갈비뼈가 내려와 흉강 압력이 높아지면 공기가 ( <span id="ans-3-res" class="text-emerald-600 font-bold">___</span> )로 이동한다.</p>
+                                <div class="flex gap-2 mt-1.5">
+                                    <select id="select-d3" class="flex-1 p-2 border rounded-lg text-xs bg-slate-50 outline-none focus:ring-2 focus:ring-sky-500">
+                                        <option value="">-- 선택하세요 --</option>
+                                        <option value="몸 밖">몸 밖</option>
+                                        <option value="폐 속">폐 속</option>
+                                    </select>
+                                    <button onclick="checkBreathQuiz(3, '몸 밖')" class="bg-sky-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-sky-700">확인</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 탭 3: 실력 쑥쑥 문제 풀기 (깔끔하게 재출제된 문항) -->
+            <section id="content-tab3" class="space-y-6 hidden">
+                <div class="bg-indigo-50 border-l-4 border-indigo-500 p-4 rounded-r-xl">
+                    <h2 class="title-font text-lg text-indigo-800">코너 3: 실력 쑥쑥 단원 확인 문제</h2>
+                    <p class="text-sm text-slate-600 mt-1">호흡계와 호흡 운동에 대해 얼마나 잘 이해했는지 객관식 문제를 풀어 실력을 점검해 보세요!</p>
+                </div>
+
+                <div id="quiz-container" class="space-y-6">
+                    <!-- 문제 동적 생성됨 -->
+                </div>
+                
+                <div id="quiz-result-card" class="hidden bg-emerald-50 border border-emerald-200 p-6 rounded-2xl text-center space-y-3">
+                    <h3 class="title-font text-2xl text-emerald-700">🎉 수고하셨습니다!</h3>
+                    <p id="final-score-text" class="text-lg font-bold text-slate-700">당신의 점수는 만점 80점 중 0점입니다!</p>
+                    <button onclick="resetQuiz()" class="bg-emerald-600 text-white px-6 py-2.5 rounded-xl font-bold hover:bg-emerald-700 transition">다시 풀기</button>
+                </div>
+            </section>
+
+            <!-- 탭 4: 결과 저장 및 이미지 다운로드 -->
+            <section id="content-tab4" class="space-y-6 hidden">
+                <div class="bg-teal-50 border-l-4 border-teal-500 p-4 rounded-r-xl">
+                    <h2 class="title-font text-lg text-teal-800">코너 4: 학습 결과 이미지 저장</h2>
+                    <p class="text-sm text-slate-600 mt-1">입력하신 학번/이름과 획득한 총점을 확인하고, 결과 인증 카드를 이미지 파일로 다운로드하세요.</p>
+                </div>
+
+                <div class="flex flex-col items-center space-y-6">
+                    <!-- 캡처 대상 인증 카드 영역 -->
+                    <div id="capture-card" class="w-full max-w-md bg-gradient-to-br from-emerald-500 to-teal-700 text-white p-8 rounded-3xl shadow-xl space-y-6 text-center border-4 border-white">
+                        <div class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto text-4xl shadow-inner backdrop-blur-sm">
+                            🫁🏆
+                        </div>
+                        <div>
+                            <h3 class="title-font text-2xl text-yellow-300">호흡계 탐험 학습 인증서</h3>
+                            <p class="text-xs text-emerald-100 mt-1">중학교 2학년 과학 단원 복습 완료</p>
+                        </div>
+                        
+                        <div class="space-y-2 bg-white/10 p-5 rounded-2xl backdrop-blur-sm text-left border border-white/20">
+                            <div class="flex justify-between text-sm py-1.5 border-b border-white/10">
+                                <span class="font-bold text-emerald-200">학번:</span>
+                                <span id="res-student-id" class="font-bold text-white">-</span>
+                            </div>
+                            <div class="flex justify-between text-sm py-1.5 border-b border-white/10">
+                                <span class="font-bold text-emerald-200">이름:</span>
+                                <span id="res-student-name" class="font-bold text-white">-</span>
+                            </div>
+                            <div class="flex justify-between text-sm py-1.5">
+                                <span class="font-bold text-emerald-200">최종 획득 점수:</span>
+                                <span id="res-student-score" class="font-bold text-yellow-300 text-base">0점 / 80점 만점</span>
+                            </div>
+                        </div>
+                        <div class="text-xs text-emerald-200">
+                            ✨ 훌륭하게 학습을 완수하였습니다! ✨
+                        </div>
+                    </div>
+
+                    <!-- 다운로드 및 재시작 버튼 -->
+                    <div class="flex gap-3 w-full max-w-md">
+                        <button onclick="downloadResultImage()" class="flex-1 py-4 bg-teal-600 text-white rounded-2xl font-bold shadow-lg hover:bg-teal-700 transition flex items-center justify-center gap-2 text-base">
+                            📸 결과 이미지 저장하기
+                        </button>
+                        <button onclick="switchTab('tab1')" class="px-5 py-4 bg-slate-200 text-slate-700 rounded-2xl font-bold hover:bg-slate-300 transition text-sm">
+                            처음부터 복습
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- 하단 푸터 -->
+        <footer class="bg-slate-100 text-slate-500 text-center py-4 border-t text-xs">
+            중학교 2학년 과학 | 디지털 복습 학습 콘텐츠
+        </footer>
+
+    </div>
+
+    <script>
+        // 전역 변수
+        let studentId = "";
+        let studentName = "";
+        let userScore = 0;
+        let solvedBlanks = {};
+        let quizAnswers = {};
+
+        // 입장 처리 및 학습 앱 시작
+        function startApp() {
+            const idInput = document.getElementById('input-student-id').value.trim();
+            const nameInput = document.getElementById('input-student-name').value.trim();
+
+            if (!idInput || !nameInput) {
+                alertUser("학번과 이름을 모두 입력해주세요!", "error");
+                return;
+            }
+
+            studentId = idInput;
+            studentName = nameInput;
+
+            document.getElementById('student-info-display').innerText = `학번: ${studentId} | 이름: ${studentName}`;
+            document.getElementById('main-nav').classList.remove('hidden');
+            switchTab('tab1');
+        }
+
+        // 탭 전환 함수
+        function switchTab(tabId) {
+            document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-white', 'text-emerald-700', 'shadow-sm', 'border', 'border-emerald-200', 'font-bold');
+                btn.classList.add('text-slate-600', 'font-medium');
+            });
+
+            document.getElementById('content-' + tabId).classList.remove('hidden');
+            
+            if (tabId !== 'tab0') {
+                const activeBtn = document.getElementById('btn-' + tabId);
+                if (activeBtn) {
+                    activeBtn.classList.add('bg-white', 'text-emerald-700', 'shadow-sm', 'border', 'border-emerald-200', 'font-bold');
+                    activeBtn.classList.remove('text-slate-600', 'font-medium');
+                }
+            }
+
+            if (tabId === 'tab4') {
+                document.getElementById('res-student-id').innerText = studentId;
+                document.getElementById('res-student-name').innerText = studentName;
+                document.getElementById('res-student-score').innerText = `${userScore}점 / 80점 만점`;
+            }
+        }
+
+        // 점수 업데이트 함수
+        function addScore(points, key) {
+            if (!solvedBlanks[key]) {
+                solvedBlanks[key] = true;
+                userScore += points;
+                document.getElementById('total-score').innerText = userScore;
+            }
+        }
+
+        // 탭 1 빈칸 정답 체크
+        function checkBlank(id, correctWord) {
+            const inputVal = document.getElementById(`blank-${id}`).value.trim();
+            const feedback = document.getElementById(`feedback-${id}`);
+
+            if (inputVal === correctWord) {
+                feedback.innerText = "✨ 정답입니다! 훌륭해요!";
+                feedback.className = "text-xs mt-1 font-bold text-emerald-600";
+                document.getElementById(`blank-${id}`).disabled = true;
+                addScore(10, `blank_${id}`);
+            } else {
+                feedback.innerText = "❌ 아쉽네요. 다시 생각해 볼까요?";
+                feedback.className = "text-xs mt-1 font-bold text-rose-500";
+            }
+        }
+
+        // 탭 2 호흡 시뮬레이션 상태 변경 (정확한 갈비뼈/가로막/화살표 움직임 반영)
+        function setBreathState(state) {
+            const titleEl = document.getElementById('breath-mode-title');
+            const lungLeft = document.getElementById('lung-left');
+            const lungRight = document.getElementById('lung-right');
+            const ribLeft = document.getElementById('rib-left');
+            const ribRight = document.getElementById('rib-right');
+            const ribLabel = document.getElementById('rib-label');
+            const diaphragm = document.getElementById('diaphragm-path');
+            const diaphragmLabel = document.getElementById('diaphragm-label');
+            const arrowGroup = document.getElementById('arrow-group');
+            const btnInhale = document.getElementById('btn-inhale');
+            const btnExhale = document.getElementById('btn-exhale');
+
+            if (state === 'inhale') {
+                titleEl.innerText = "🌿 들숨 상태 (숨 들이쉬기)";
+                titleEl.className = "title-font text-xl text-emerald-600 mb-2";
+                
+                // 갈비뼈 위/밖으로 올라감
+                ribLeft.setAttribute('d', 'M120,45 Q20,70 15,180');
+                ribRight.setAttribute('d', 'M140,45 Q240,70 245,180');
+                ribLabel.textContent = "갈비뼈 위·밖으로 올라감 ⬆️";
+
+                // 폐 팽창
+                lungLeft.setAttribute('d', 'M120,95 C30,95 15,145 35,215 C45,240 95,245 120,215 Z');
+                lungRight.setAttribute('d', 'M140,95 C230,95 245,145 225,215 C215,240 165,245 140,215 Z');
+                
+                // 가로막 아래로 평평하게 내려감
+                diaphragm.setAttribute('d', 'M15,275 Q130,265 245,275');
+                diaphragmLabel.textContent = "가로막 아래로 평평하게 내려감 ⬇️";
+
+                // 공기 화살표: 몸 안(아래쪽)으로 들어옴
+                arrowGroup.innerHTML = `
+                    <path d="M130,5 L130,40" stroke="#10b981" stroke-width="4" stroke-linecap="round"/>
+                    <polygon points="122,32 130,45 138,32" fill="#10b981"/>
+                    <path d="M130,15 L130,30" stroke="#34d399" stroke-width="2" stroke-dasharray="3 3"/>
+                `;
+                
+                btnInhale.className = "flex-1 py-2.5 bg-emerald-600 text-white rounded-xl font-bold shadow hover:bg-emerald-700 transition";
+                btnExhale.className = "flex-1 py-2.5 bg-slate-200 text-slate-700 rounded-xl font-bold shadow hover:bg-slate-300 transition";
+            } else {
+                titleEl.innerText = "💨 날숨 상태 (숨 내쉬기)";
+                titleEl.className = "title-font text-xl text-sky-600 mb-2";
+
+                // 갈비뼈 아래로 내려감
+                ribLeft.setAttribute('d', 'M120,60 Q45,90 40,195');
+                ribRight.setAttribute('d', 'M140,60 Q215,90 220,195');
+                ribLabel.textContent = "갈비뼈 내려감 ⬇️";
+
+                // 폐 수축
+                lungLeft.setAttribute('d', 'M120,95 C55,95 40,145 55,200 C65,220 100,225 120,205 Z');
+                lungRight.setAttribute('d', 'M140,95 C205,95 220,145 205,200 C195,220 160,225 140,205 Z');
+                
+                // 가로막 위로 볼록하게 올라감
+                diaphragm.setAttribute('d', 'M40,250 Q130,210 220,250');
+                diaphragmLabel.textContent = "가로막 위로 볼록하게 올라감 ⬆️";
+
+                // 공기 화살표: 몸 밖(위쪽)으로 나감
+                arrowGroup.innerHTML = `
+                    <path d="M130,45 L130,10" stroke="#0284c7" stroke-width="4" stroke-linecap="round"/>
+                    <polygon points="122,18 130,5 138,18" fill="#0284c7"/>
+                    <path d="M130,35 L130,20" stroke="#38bdf8" stroke-width="2" stroke-dasharray="3 3"/>
+                `;
+
+                btnInhale.className = "flex-1 py-2.5 bg-slate-200 text-slate-700 rounded-xl font-bold shadow hover:bg-slate-300 transition";
+                btnExhale.className = "flex-1 py-2.5 bg-sky-600 text-white rounded-xl font-bold shadow hover:bg-sky-700 transition";
+            }
+        }
+
+        // 호흡 운동 원리 퀴즈 체크
+        function checkBreathQuiz(id, correctVal) {
+            const selectVal = document.getElementById(`select-d${id}`).value;
+            const resSpan = document.getElementById(`ans-${id}-res`);
+
+            if (selectVal === correctVal) {
+                resSpan.innerText = correctVal;
+                alertUser(`정답입니다! 🌟`, 'success');
+                addScore(10, `breath_${id}`);
+            } else {
+                alertUser(`다시 선택해 보세요!`, 'error');
+            }
+        }
+
+        // 깔끔하게 재출제된 3문항
+        const quizData = [
+            {
+                id: 1,
+                question: "사람의 호흡계에 속하는 기관을 바르게 고른 것은?",
+                options: ["위, 소장", "코, 허파꽈리", "심장, 대동맥", "콩팥, 방광"],
+                answer: 1,
+                explanation: "호흡계에는 코, 숨관, 숨관가지, 허파(허파꽈리) 등이 포함됩니다."
+            },
+            {
+                id: 2,
+                question: "숨을 들이쉴 때(들숨) 흉강과 폐 내부의 변화로 옳은 것은?",
+                options: [
+                    "흉강의 부피가 넓어져 압력이 낮아진다.",
+                    "흉강의 부피가 좁아져 압력이 높아진다.",
+                    "가로막이 위로 볼록하게 올라간다.",
+                    "갈비뼈가 아래로 내려간다."
+                ],
+                answer: 0,
+                explanation: "들숨 시 갈비뼈가 올라가고 가로막이 내려가 흉강 부피가 넓어지므로 압력이 낮아져 공기가 들어옵니다."
+            },
+            {
+                id: 3,
+                question: "허파꽈리가 수많은 작은 주머니 구조로 이루어진 까닭은 무엇인가요?",
+                options: [
+                    "체온을 낮추기 위해서",
+                    "음식물 이동을 쉽게 하기 위해서",
+                    "기체 교환이 일어나는 표면적을 넓히기 위해서",
+                    "혈액의 양을 조절하기 위해서"
+                ],
+                answer: 2,
+                explanation: "허파꽈리는 표면적을 극대화하여 산소와 이산화탄소 교환을 효율적으로 돕습니다."
+            }
+        ];
+
+        // 퀴즈 렌더링
+        function renderQuiz() {
+            const container = document.getElementById('quiz-container');
+            let html = '';
+
+            quizData.forEach((q, idx) => {
+                html += `
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                        <h3 class="font-bold text-slate-800 text-sm md:text-base">문제 ${idx + 1}. ${q.question}</h3>
+                        <div class="grid grid-cols-1 gap-2">
+                `;
+                q.options.forEach((opt, optIdx) => {
+                    html += `
+                        <button onclick="answerQuiz(${idx}, ${optIdx})" id="q${idx}-opt${optIdx}" class="text-left p-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-indigo-50 text-xs md:text-sm transition">
+                            ${optIdx + 1}) ${opt}
+                        </button>
+                    `;
+                });
+                html += `</div><p id="q${idx}-feedback" class="text-xs font-semibold mt-2 hidden"></p></div>`;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function answerQuiz(qIdx, optIdx) {
+            const q = quizData[qIdx];
+            const feedbackEl = document.getElementById(`q${qIdx}-feedback`);
+            
+            if (quizAnswers[qIdx] !== undefined) return;
+
+            quizAnswers[qIdx] = optIdx;
+            
+            for (let i = 0; i < q.options.length; i++) {
+                const btn = document.getElementById(`q${qIdx}-opt${i}`);
+                btn.disabled = true;
+                if (i === q.answer) {
+                    btn.className = "text-left p-3 rounded-xl border border-emerald-300 bg-emerald-100 text-emerald-800 text-xs md:text-sm font-bold";
+                } else if (i === optIdx) {
+                    btn.className = "text-left p-3 rounded-xl border border-rose-300 bg-rose-100 text-rose-800 text-xs md:text-sm";
+                }
+            }
+
+            feedbackEl.classList.remove('hidden');
+            if (optIdx === q.answer) {
+                feedbackEl.innerText = `정답입니다! 💡 해설: ${q.explanation}`;
+                feedbackEl.className = "text-xs font-bold text-emerald-600 mt-2";
+                addScore(10, `quiz_${qIdx}`);
+            } else {
+                feedbackEl.innerText = `틀렸습니다. 💦 해설: ${q.explanation}`;
+                feedbackEl.className = "text-xs font-bold text-rose-600 mt-2";
+            }
+
+            if (Object.keys(quizAnswers).length === quizData.length) {
+                setTimeout(showFinalResult, 800);
+            }
+        }
+
+        function showFinalResult() {
+            const resultCard = document.getElementById('quiz-result-card');
+            const finalScoreText = document.getElementById('final-score-text');
+            resultCard.classList.remove('hidden');
+            finalScoreText.innerText = `🎉 획득 총점: ${userScore}점 / 만점 80점`;
+            resultCard.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function resetQuiz() {
+            userScore = 0;
+            solvedBlanks = {};
+            quizAnswers = {};
+            document.getElementById('total-score').innerText = 0;
+            document.getElementById('quiz-result-card').classList.add('hidden');
+            
+            for(let i=1; i<=5; i++) {
+                const input = document.getElementById(`blank-${i}`);
+                if(input) {
+                    input.value = '';
+                    input.disabled = false;
+                }
+                const fb = document.getElementById(`feedback-${i}`);
+                if(fb) fb.innerText = '';
+            }
+            renderQuiz();
+            switchTab('tab1');
+        }
+
+        // 결과 이미지 다운로드 기능 (html2canvas 활용)
+        function downloadResultImage() {
+            const captureCard = document.getElementById('capture-card');
+            
+            html2canvas(captureCard, { scale: 2 }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `호흡계학습인증_${studentId}_${studentName}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }).catch(err => {
+                alertUser("이미지 저장 중 오류가 발생했습니다.", "error");
+            });
+        }
+
+        function alertUser(msg, type) {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-5 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded-xl text-white text-xs font-bold shadow-lg z-50 transition-all ${type === 'success' ? 'bg-emerald-600' : 'bg-rose-500'}`;
+            notification.innerText = msg;
+            document.body.appendChild(notification);
+            setTimeout(() => {
+                notification.remove();
+            }, 2000);
+        }
+
+        window.onload = function() {
+            renderQuiz();
+        }
+    </script>
+</body>
+</html>
